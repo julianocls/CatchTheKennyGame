@@ -28,6 +28,7 @@ class ViewController: UIViewController {
     var counter = 0
     var kennyImages = [UIImageView()]
     var hidenTimer = Timer()
+    var hightScore = 0
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -43,6 +44,11 @@ class ViewController: UIViewController {
         timeLabel.text = String(counter)
         timer = Timer.scheduledTimer(timeInterval: 1, target: self, selector: #selector(countDown), userInfo: nil, repeats: true)
         hidenTimer = Timer.scheduledTimer(timeInterval: 0.5, target: self, selector: #selector(hideKenny), userInfo: nil, repeats: true)
+        
+        if let storeHightScore = UserDefaults.standard.object(forKey: "highscore") as? Int {
+            self.hightScore = storeHightScore
+            hithsScoreLabel.text = "Highscore: \(self.hightScore)"
+        }
     }
     
     @objc func hideKenny(){
@@ -64,9 +70,15 @@ class ViewController: UIViewController {
         if counter == 0 {
             timer.invalidate()
             hidenTimer.invalidate()
-
+            
             for kenny in kennyImages {
                 kenny.isHidden = true
+            }
+            
+            if self.score > self.hightScore {
+                self.hightScore = self.score
+                hithsScoreLabel.text = "Highscore: \(self.hightScore)"
+                UserDefaults.standard.set(self.hightScore, forKey: "highscore")
             }
             
             let alert = UIAlertController(title: "Time's Up", message: "Do you want to play again?", preferredStyle: .alert)
